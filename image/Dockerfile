@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-buster
+FROM openjdk:11-jdk-buster
 
 ENV TINI_VERSION v0.19.0
 ARG TARGETPLATFORM
