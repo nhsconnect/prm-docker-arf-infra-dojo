@@ -27,12 +27,54 @@ function docker_login {
 
 function get_aws_ssm_secret {
   secret_id=$1
-  json=$(aws ssm get-parameter --with-decryption --region $AWS_REGION --name $secret_id)
+  json=$(docker run --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY amazon/aws-cli "aws ssm get-parameter --with-decryption --region $AWS_REGION --name $secret_id")
   if [ $? != 0 ]; then
     >&2 echo "Failed to obtain AWS secret from SSM: $secret_id"
     exit 5
   fi
   echo $json | jq -r ".Parameter.Value"
+}
+
+function create_docker_builder() {
+    local builder_name=arch_builder
+    docker buildx &> /dev/null || { echo 'Please install and enable buildx - https://docs.docker.com/buildx/working-with-buildx/ ' ; exit 1; }
+
+    # Allowing linux machines to build arm64
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true
+
+    if docker buildx inspect arch_builder --bootstrap &> /dev/null
+    then
+      echo "Builder already exists removing previous builder"
+      docker buildx rm ${builder_name}
+    fi
+    echo "Creating new multi arch builder"
+    docker buildx create --name ${builder_name} --platform linux/amd64,linux/arm64 --driver docker-container --use
+    docker buildx inspect --bootstrap
+    docker buildx ls
+}
+
+function build_multi_arch() {
+    local image_dir=${1?image_dir not set}
+    local image_short_name=${2?image_short_name not set}
+    local image_tag=${3:-}
+    local image_registry=${4:-dockerhub}
+    local image_platform=${5:-linux/arm64/v8,linux/amd64}
+
+    create_docker_builder
+
+    docker_ops::log_info "image_dir set to: ${image_dir}"
+    docker_ops::log_info "image_short_name set to: ${image_short_name}"
+    docker_ops::log_info "imagerc_filename set to: ${imagerc_filename}"
+
+    docker_ops::create_imagerc "${image_dir}" "${imagerc_filename}" "${image_short_name}" "${image_tag}" "${image_registry}"
+    docker_ops::source_imagerc  ${image_dir} ${imagerc_filename}
+
+    initial_dir="$(pwd)"
+    cd "${image_dir}"
+    docker_ops::log_info "image_tag set to: ${image_tag}"
+
+    set -x -e
+    docker buildx build --platform "${image_platform}"  -t "${KUDU_DOCKER_IMAGE_URL}" --push .
 }
 
 command="$1"
@@ -41,6 +83,13 @@ case "${command}" in
   build_local)
       image_tag=${GO_PIPELINE_LABEL:-$(git rev-parse HEAD)}
       docker_ops::docker_build "${image_dir}" "${imagerc_filename}" "${image_name}" "${image_tag}" "${image_registry}"
+      ;;
+  build_multi_arch)
+      DOCKERHUB_PASSWORD=$(get_aws_ssm_secret "/repo/prod/user-input/gocd-dockerhub-password")
+      docker_login
+      image_tag=$(git rev-parse HEAD)
+      # build image and push to registry
+      build_multi_arch ${image_dir} "${image_name}" "${image_tag}" "${image_registry}" "${image_platform}"
       ;;
   build)
       DOCKERHUB_PASSWORD=$(get_aws_ssm_secret "/repo/prod/user-input/gocd-dockerhub-password")

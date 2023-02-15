@@ -8,7 +8,7 @@ fileignoreconfig:
 - filename: image/etc_dojo.d/scripts/20-setup-identity.sh
   checksum: 7f7403db053b6ec227f56d5ccd9410823aacf522459fe63fdc7148664e8ed767
 - filename: tasks
-  checksum: 039b0342630e6384697add5dfea16032afae9357418d3470558fc7bdd72fc2bf
+  checksum: d93ce8adecb960a2cbc099e8c94ee36cf3aa5912ad0c0462f981faf6bb409f14
 - filename: README.md
   checksum: b4f646defd677c92d2b29e37d5a6a0db2793157cb692195dad076b2cea7ab551
 version: ""
