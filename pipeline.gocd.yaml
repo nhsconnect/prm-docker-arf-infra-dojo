@@ -1,0 +1,27 @@
+format_version: 3
+pipelines:
+  access-request-fulfilment-infra-dojo:
+    group: dojo
+    label_template: "${COUNT}-${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+        blacklist:
+          - "**/*.md"
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            docker_image:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: image/imagerc
+                    destination:
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks build

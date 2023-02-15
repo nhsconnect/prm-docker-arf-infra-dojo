@@ -1,0 +1,14 @@
+fileignoreconfig:
+- filename: image/bashrc
+  checksum: 24c9a5fac9a6ce07d974ad656d05be902c95be40a595d0800583d0b76b40975c
+- filename: image/profile
+  checksum: c00abdd225d49134b6604c5430b0edadc09f9e9d4920297626a384c4a1c1c57b
+- filename: image/aws-cli.rsa
+  checksum: 58ae6eec38e1a2e432085e455620c1c5835ba03daa6fe5956f7fd662a1fc9616
+- filename: image/etc_dojo.d/scripts/20-setup-identity.sh
+  checksum: 7f7403db053b6ec227f56d5ccd9410823aacf522459fe63fdc7148664e8ed767
+- filename: tasks
+  checksum: 039b0342630e6384697add5dfea16032afae9357418d3470558fc7bdd72fc2bf
+- filename: README.md
+  checksum: b4f646defd677c92d2b29e37d5a6a0db2793157cb692195dad076b2cea7ab551
+version: ""

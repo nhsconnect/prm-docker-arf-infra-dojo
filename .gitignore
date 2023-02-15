@@ -1,0 +1,7 @@
+imagerc*
+.DS_Store
+Dojofile.example
+.terraform
+*.png
+.idea
+ops/
