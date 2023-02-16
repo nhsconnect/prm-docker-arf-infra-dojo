@@ -1,6 +1,6 @@
 imagerc*
 .DS_Store
-Dojofile.example
+Dojofile
 .terraform
 *.png
 .idea

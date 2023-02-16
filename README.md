@@ -9,11 +9,17 @@ Tested and released images are published to dockerhub as [nhsdev/arf-infra-dojo]
 ## Usage
 1. Setup docker.
 2. Install [Dojo](https://github.com/kudulab/dojo) binary.
-3. Provide a Dojofile at the root of the project:
+3. Provide a Dojofile at the root of the project for testing (you can copy the Dojofile.example):
 ```
 DOJO_DOCKER_IMAGE="nhsdev/arf-infra-dojo:<commit>"
 ```
-4. Create and enter the container by running `dojo` at the root of project.
+4. Build the container for testing
+
+```bash
+docker build ./image -t arf-infra-dojo:<timestamp>
+```
+
+5. Create and enter the container by running `dojo` at the root of project.
 
 By default, current directory in docker container is `/dojo/work`.
 

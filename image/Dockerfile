@@ -17,7 +17,7 @@ RUN apt-get update && \
   /tmp/dojo_git/image_scripts/src/install.sh && \
   rm -r /tmp/dojo_git
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nano less gpg
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nano less gpg zip
 
 ENV GRADLE_VERSION 7.3.2
 ENV GRADLE_HOME /usr/lib/gradle/gradle-${GRADLE_VERSION}
