@@ -104,13 +104,10 @@ case "${command}" in
       docker_ops::push "${image_dir}" "${imagerc_filename}"
       ;;
   scan)
-      docker run --user=0 --rm -v \
-      $(pwd)/results:/results \
-      aquasec/trivy image \
-      --exit-code 1 \
-      --severity CRITICAL \
-      -f json -o /results/results.json \
-      --timeout 15m \
+      trivy image\
+      --exit-code 1 --severity CRITICAL\
+      -f json -o results/results.json\
+      --timeout 15m\
       nhsdev/arf-infra-dojo:latest
       ;;
   *)
