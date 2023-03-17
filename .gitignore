@@ -5,3 +5,4 @@ Dojofile
 *.png
 .idea
 ops/
+results/

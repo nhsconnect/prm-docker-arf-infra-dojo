@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-buster
+FROM eclipse-temurin:11.0.18_10-jdk-jammy
 
 ENV TINI_VERSION v0.19.0
 ARG TARGETPLATFORM
@@ -17,9 +17,9 @@ RUN apt-get update && \
   /tmp/dojo_git/image_scripts/src/install.sh && \
   rm -r /tmp/dojo_git
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nano less gpg zip
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nano less gpg gpg-agent zip unzip
 
-ENV GRADLE_VERSION 7.3.2
+ENV GRADLE_VERSION 8.0.2
 ENV GRADLE_HOME /usr/lib/gradle/gradle-${GRADLE_VERSION}
 RUN cd /tmp &&\
   wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip &&\

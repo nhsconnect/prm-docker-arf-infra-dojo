@@ -1,0 +1,32 @@
+format_version: 3
+pipelines:
+  arf-infra-pipeline-security-check:
+    group: dojo
+    label_template: "${COUNT}"
+    materials:
+      git:
+        type: configrepo
+        blacklist:
+          - "**/*.md"
+    timer:
+      spec: "0 0 0 * * ?"
+      only_on_changes: no
+    stages:
+      - scan:
+          approval:
+            type: manual
+          clean_workspace: true
+          jobs:
+            trivy_scan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: results/results.json
+                    destination:
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks scan

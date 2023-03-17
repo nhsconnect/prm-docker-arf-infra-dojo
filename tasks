@@ -78,7 +78,7 @@ function build_multi_arch() {
     docker_ops::log_info "image_tag set to: ${image_tag}"
 
     set -x -e
-    docker buildx build --platform "${image_platform}"  -t "${KUDU_DOCKER_IMAGE_URL}" --push .
+    docker buildx build --platform "${image_platform}"  -t "${KUDU_DOCKER_IMAGE_URL}" -t "${KUDU_DOCKER_IMAGE_NAME}:latest" --push .
 }
 
 command="$1"
@@ -102,6 +102,16 @@ case "${command}" in
       docker_login
       ./tasks build_local
       docker_ops::push "${image_dir}" "${imagerc_filename}"
+      ;;
+  scan)
+      docker run --user=0 --rm -v \
+      $(pwd)/results:/results \
+      aquasec/trivy image \
+      --exit-code 1 \
+      --severity CRITICAL \
+      -f json -o /results/results.json \
+      --timeout 15m \
+      nhsdev/arf-infra-dojo:latest
       ;;
   *)
       echo "Invalid command: '${command}'"
